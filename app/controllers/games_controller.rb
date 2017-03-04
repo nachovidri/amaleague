@@ -40,6 +40,7 @@ class GamesController < ApplicationController
 	def assign_points
 		Game.assign_points
 		Game.calculate_points
+		Game.calculate_goals_for
 		redirect_to '/teams'
 	end
 

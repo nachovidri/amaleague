@@ -38,20 +38,20 @@ class Game < ApplicationRecord
 		end
 	end
 
-	# def self.calculate_goals
-	# 	@teams = Team.all
-	# 	points = 0
-	# 	@teams.each do |team|
-	# 		team.games_as_local.each do |game_local|
-	# 			points = points + game_local.local_points unless game_local.local_points.nil?
-	# 		end
-	# 		team.games_as_visitor.each do |game_visitor|
-	# 			points = points + game_visitor.visitor_points unless game_visitor.visitor_points.nil?
-	# 		end
-	# 	team.points = points
-	# 	team.save
-	# 	end
-	# end
+	def self.calculate_goals_for
+		@teams = Team.all
+		goals_for = 0
+		@teams.each do |team|
+			team.games_as_local.each do |game_local|
+				goals_for = goals_for + game_local.local_goals unless game_local.local_goals.nil?
+			end
+			team.games_as_visitor.each do |game_visitor|
+				goals_for = goals_for + game_visitor.visitor_goals unless game_visitor.visitor_goals.nil?
+			end
+		team.goals_for = goals_for
+		team.save
+		end
+	end
 end
 
 
