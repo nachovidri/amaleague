@@ -1,13 +1,22 @@
 <h1>Teams</h1>
 
-<ul>
+<table class="table table-striped">
+	<tr>
+		<th>Name</th>
+		<th>Points</th>
+		<th>Goals For</th>
+	</tr>
 	<% @teams.each do |team| %>
-		<li>
-			<%= team.name %>
-			| Points: <%= team.points %>
-			| Goals for: <%= team.goals_for %>
-		</li>
+		<tr>
+			<td><%= team.name %></td>
+			 <td><%= team.points %></td>
+			 <td><%= team.goals_for %></td> 
+		</tr>
 
 	<% end %>
 
-</ul>
+</table>
+
+<button>
+		<%= link_to 'Back', games_path, method: :get %>	
+</button>

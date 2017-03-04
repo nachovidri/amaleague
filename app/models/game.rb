@@ -33,8 +33,8 @@ class Game < ApplicationRecord
 			team.games_as_visitor.each do |game_visitor|
 				points = points + game_visitor.visitor_points unless game_visitor.visitor_points.nil?
 			end
-		team.points = points
-		team.save
+			team.points = points
+			team.save
 		end
 	end
 
@@ -48,8 +48,8 @@ class Game < ApplicationRecord
 			team.games_as_visitor.each do |game_visitor|
 				goals_for = goals_for + game_visitor.visitor_goals unless game_visitor.visitor_goals.nil?
 			end
-		team.goals_for = goals_for
-		team.save
+			team.goals_for = goals_for
+			team.save
 		end
 	end
 end
