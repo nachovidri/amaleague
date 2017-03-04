@@ -1,0 +1,16 @@
+
+
+<%= form_for [@game] do |f| %>
+
+	<%= f.label :local %>
+	<%= f.select :local_team_id, Team.all.collect { |t| [t.name, t.id] } %>
+
+	<%= f.label :visitor %>
+	<%= f.select :visitor_team_id, Team.all.collect { |t| [t.name, t.id] } %>
+
+	<%= f.label :date %>
+	<%= f.datetime_field :game_date_time %>
+
+	<%= f.button %>
+
+<% end %>

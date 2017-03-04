@@ -1,0 +1,19 @@
+<h1>Game</h1>
+
+LOCAL<br>
+<%= @game.local_team.name %><br>
+Goals: <%= @game.local_goals %><br>
+Points: <%= @game.local_points %>
+
+<br>
+<br>
+
+VISITOR<br>
+<%= @game.visitor_team.name %><br>
+Goals: <%= @game.visitor_goals %><br>
+Points: <%= @game.visitor_points %>
+
+<br>
+<br>
+
+Date and time: <%= @game.game_date_time %>

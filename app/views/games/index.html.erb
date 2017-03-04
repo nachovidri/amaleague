@@ -1,0 +1,19 @@
+<h1>Games</h1>
+
+<ul>
+	<% @games.each do |game| %>
+		<li>
+			<%= game.local_team.name %> vs <%= game.visitor_team.name %>
+		<br>
+			<%= game.local_goals %> - <%= game.visitor_goals %>
+		
+			<!-- <a href='<%= "/games/#{game.id}/edit" %>'>EDIT</a> -->
+
+			<%= link_to('Edit', edit_game_path(game), method: :get, data: { confirm: 'Are you sure?' }) %>
+			<%= link_to('Delete', game_path(game), method: :delete, data: { confirm: 'Are you sure?' }) %>
+		</li>
+
+	<% end %>
+
+	<%= link_to 'View table', assign_points_path, method: :get %>
+</ul>
