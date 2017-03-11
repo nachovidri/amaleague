@@ -7,29 +7,43 @@
 
 <body>
 	<h1>Games</h1>
-	<table class="table table-striped">
-		<tr>
-			<th>Name</th>
-			<th>Result</th>
-			<th>Options</th>
-		</tr>
+    
+	<% @game_fixture = "" %>
+<table class="table table-striped">
+	<% @games.each do |game| %>
+	    
+			<% if game.fixture != @game_fixture %>	
+				<tr>
+					<td colspan="4"><h2>Fixture <%= game.fixture %></h2></td>
+				</tr>
+				
+				<% @game_fixture = game.fixture %>
+				
+					<tr>
+						<th>Teams</th>
+						<th>Result</th>
+						<th>Date</th>
+						<th>Options</th>
+					</tr>
+			<% end %>
+					<tr>
+						<td><%= game.local_team.name %> vs <%= game.visitor_team.name %></td>
+						<td><%= game.local_goals %> - <%= game.visitor_goals %></td>
+						<td><%= game.game_date_time %></td>
+						<td>
+							<%= link_to('Edit', edit_game_path(game), method: :get) %>
+							<%= link_to('Delete', game_path(game), method: :delete, data: { confirm: 'Are you sure?' }) %>
+						</td>
+					</tr>
+		
+	<% end %>
 
-		<% @games.each do |game| %>
-			<tr>
-				<td><%= game.local_team.name %> vs <%= game.visitor_team.name %></td>
-				<td><%= game.local_goals %> - <%= game.visitor_goals %></td>
-				<td>
-					<%= link_to('Edit', edit_game_path(game), method: :get, data: { confirm: 'Are you sure?' }) %>
-					<%= link_to('Delete', game_path(game), method: :delete, data: { confirm: 'Are you sure?' }) %>	
-				<td>
-			</tr>
+</table>
 
-		<% end %>
-	</table>
+	<button>
+		<%= link_to 'Back', leagues_path, method: :get %>	
+	</button>
 
-		<button>
-			<%= link_to 'View table', assign_points_path, method: :get %>	
-		</button>
 	
 </body>
 </html>

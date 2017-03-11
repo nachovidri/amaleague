@@ -1,8 +1,7 @@
 class GamesController < ApplicationController
 
 	def index
-		@games = Game.order(game_date_time: :desc)
-		render 'index'
+		@games = Game.order(fixture: :asc)
 	end
 
 	def show
@@ -37,11 +36,18 @@ class GamesController < ApplicationController
 		redirect_to '/games'
 	end
 
-	def assign_points
+	def view_table
+		@teams = Team.all
 		Game.assign_points
 		Game.calculate_points
 		Game.calculate_goals_for
-		redirect_to '/teams'
+		render '/teams/table'
+	end
+
+	def generate_fixture
+		# Game.generate_fixture_dummy
+		Game.generate_fixture
+		redirect_to '/games'
 	end
 
 	private
@@ -51,7 +57,7 @@ class GamesController < ApplicationController
 	end
 
 	def game_params
-		params.require(:game).permit(:local_team_id, :visitor_team_id, :game_date_time)
+		params.require(:game).permit(:local_team_id, :visitor_team_id, :local_goals, :visitor_goals, :game_date_time)
 	end
 
 end

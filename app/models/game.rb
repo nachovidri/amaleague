@@ -52,6 +52,98 @@ class Game < ApplicationRecord
 			team.save
 		end
 	end
+
+	def self.generate_fixture_dummy
+		teams = Team.all
+		num_teams = teams.count
+		fixtures = teams.each_slice(2)
+		fixture_n = 1
+		for i in 1..num_teams*2-2
+			fixtures.each do |fixture|
+				if fixture.count == 2
+					game = Game.new
+					game.local_team = fixture[0]
+					game.visitor_team = fixture[1]
+					game.fixture = fixture_n
+					game.save
+				else
+					not_playing = fixture[0].name
+				end
+				
+			end
+			fixture_n += 1
+		end
+	end
+
+	def self.generate_fixture
+		Game.destroy_all
+		teams = Team.all.to_a
+
+		if teams.count%2 == 1
+			dummy_team = Team.new
+			dummy_team.id = -1
+			teams << dummy_team
+		end
+
+		teams = teams.shuffle
+		num_teams = teams.count
+
+		fixture_ini = teams.each_slice(2).to_a
+		num_fixtures = num_teams*2-2
+		num_games = fixture_ini.count
+		fixture_n = 1
+		aux = []
+
+		for i in 1..num_fixtures
+			fixture_ini.each do |team|
+				if fixture_n <= (num_fixtures/2)
+					if (team[0].id != -1 && team[1].id != -1) 
+						game = Game.new
+						game.local_team = team[0]
+						game.visitor_team = team[1]
+						game.fixture = fixture_n
+						game.save
+					elsif (team[0] != -1)
+						not_playing = team[0]
+					else
+						not_playing = team[1]
+					end
+				else
+					if (team[0].id != -1 && team[1].id != -1) 
+						game = Game.new
+						game.local_team = team[1]
+						game.visitor_team = team[0]
+						game.fixture = fixture_n
+						game.save
+					elsif (team[0] != -1)
+						not_playing = team[0]
+					else
+						not_playing = team[1]
+					end
+				end
+			end
+			
+			aux = fixture_ini.inject([]){|a, element| a << element.dup}
+
+			for i in 0..(num_games-1)
+				if i == 0
+					# fixture_ini[0][0] = fixture_ini[0][0]
+					aux[0][1] = fixture_ini[1][0]
+				elsif i == (num_games-1)
+					aux[num_games-1][0] = fixture_ini[num_games-1][1]
+					aux[num_games-1][1] = fixture_ini[num_games-2][1]
+				else
+					aux[i][0] = fixture_ini[i+1][0]
+					aux[i][1] = fixture_ini[i-1][1]
+				end
+			end
+			
+			fixture_ini = aux.inject([]){|a, element| a << element.dup}
+
+			fixture_n += 1
+			
+		end
+	end
 end
 
 

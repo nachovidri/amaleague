@@ -1,6 +1,6 @@
 <h1>Game</h1>
 
-LOCAL<br>
+LOCAL:
 <%= @game.local_team.name %><br>
 Goals: <%= @game.local_goals %><br>
 Points: <%= @game.local_points %>
@@ -8,7 +8,7 @@ Points: <%= @game.local_points %>
 <br>
 <br>
 
-VISITOR<br>
+VISITOR:
 <%= @game.visitor_team.name %><br>
 Goals: <%= @game.visitor_goals %><br>
 Points: <%= @game.visitor_points %>
@@ -17,3 +17,7 @@ Points: <%= @game.visitor_points %>
 <br>
 
 Date and time: <%= @game.game_date_time %>
+<br>
+<button>
+		<%= link_to 'Back', games_path, method: :get %>	
+</button>
