@@ -12,18 +12,19 @@ class Game < ApplicationRecord
     update POINTS[:draw] if local_goals == visitor_goals
   end
 
-  def schedule
+  def self.schedule
     teams = Team.all.to_a
-    (0...num_teams-1).map do |r|
+    (0...teams.size-1).map do |r|
       t = teams.dup
       first_team = t.shift
       r.times { |i| t << t.shift }
       t = t.unshift(first_team)
-      tms_away = t[0...num_teams/2]
-      tms_home = t[num_teams/2...num_teams].reverse
+      tms_away = t[0...teams.size/2]
+      tms_home = t[teams.size/2...teams.size].reverse
 
-      (0...(num_teams/2)).map do |i|
-        create! local_team:tms_home[i], visitor_team: tms_away[i], fixture: r + 1, validate: false
+      (0...(teams.size/2)).map do |i|
+        obj = new local_team:tms_home[i], visitor_team: tms_away[i], fixture: r + 1
+        obj.save(valdiate: false)
         [tms_away[i],tms_home[i]]
       end
     end
