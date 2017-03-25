@@ -1,0 +1,39 @@
+<h1>Table</h1>
+
+<table class="table table-striped table-responsive">
+	<thead>
+		<th>Position</th>
+		<th>Name</th>
+		<th>Played</th>
+		<th>Won</th>
+		<th>Lost</th>
+		<th>Draw</th>
+		<th>GF</th>
+		<th>GA</th>
+		<th>GD</th>
+		<th>Points</th>
+	</thead>
+	<% @teams.each.with_index do |team, index| %>
+		<tr>
+			<td><%= index + 1 %></td>
+			<td><%= team.name %></td>
+			<td><%= team.games_played %></td>
+			<td><%= team.games_won %></td>
+			<td><%= team.games_lost %></td>
+			<td><%= team.games_draw %></td>
+			<td><%= team.goals_for %></td>
+			<td><%= team.goals_against %></td>
+			<td><%= team.goals_for - team.goals_against %></td>
+			<td><%= team.points %></td>
+		</tr>
+	<% end %>
+
+</table>
+
+<button class="btn btn-default">
+		<%= link_to 'Back', root_path, method: :get %>	
+</button>
+
+<button class="btn btn-default">
+		<%= link_to 'View fixtures', games_path %>	
+</button>

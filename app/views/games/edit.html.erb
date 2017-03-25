@@ -2,10 +2,10 @@
 
 <%= form_for [@game] do |f| %>
 
-	<%= f.label :local_goals %>
+	<%= f.label :local_goals, @game.local_team.name %>
 	<%= f.text_field :local_goals %>
 
-	<%= f.label :visitor_goals %>
+	<%= f.label :visitor_goals, @game.visitor_team.name %>
 	<%= f.text_field :visitor_goals %>
 
 	<%= f.label :date %>

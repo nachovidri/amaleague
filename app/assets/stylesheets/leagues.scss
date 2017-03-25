@@ -1,3 +1,20 @@
 // Place all the styles related to the leagues controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+h1 {
+	color: #36f;
+	margin-bottom: 1em;
+}
+
+.row {
+	margin-bottom: 1em;
+}
+
+button {
+	margin: 0.5em
+}
+
+.thumbnail .fa {
+	font-size: 9em;
+	display: block;
+}

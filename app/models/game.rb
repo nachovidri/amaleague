@@ -2,78 +2,122 @@ class Game < ApplicationRecord
 	belongs_to :local_team, class_name: "Team", foreign_key: "local_team_id"
 	belongs_to :visitor_team, class_name: "Team", foreign_key: "visitor_team_id"
 
+	POINTS = {win: 3, loose: 0, draw: 1}
+
 	def self.assign_points
 		games = Game.all
 		games.each do |game|
-			if(game.local_goals && game.visitor_goals)
-				if game.local_goals > game.visitor_goals
-					game.local_points = 3
-					game.visitor_points = 0
-					game.save
-				elsif game.local_goals < game.visitor_goals
-					game.local_points = 0
-					game.visitor_points = 3
-					game.save
-				else
-					game.local_points = 1
-					game.visitor_points = 1
-					game.save
-				end
+			next unless game.local_goals && game.visitor_goals
+			
+			if game.local_goals > game.visitor_goals
+				game.local_points = 3
+				game.visitor_points = 0
+				game.save
+			elsif game.local_goals < game.visitor_goals
+				game.local_points = 0
+				game.visitor_points = 3
+				game.save
+			else
+				game.local_points = 1
+				game.visitor_points = 1
+				game.save
 			end
 		end
 	end
 
 	def self.calculate_points
-		@teams = Team.all
-		points = 0
-		@teams.each do |team|
-			team.games_as_local.each do |game_local|
-				points = points + game_local.local_points unless game_local.local_points.nil?
-			end
-			team.games_as_visitor.each do |game_visitor|
-				points = points + game_visitor.visitor_points unless game_visitor.visitor_points.nil?
-			end
-			team.points = points
-			team.save
+		Team.all.each do |team|
+			local_points = team.games_as_local.sum(:local_points)
+			visitor_points = team.games_as_visitor.sum(:visitor_points)
+			team.update points: local_points + visitor_points
 		end
 	end
 
 	def self.calculate_goals_for
-		@teams = Team.all
-		goals_for = 0
-		@teams.each do |team|
-			team.games_as_local.each do |game_local|
-				goals_for = goals_for + game_local.local_goals unless game_local.local_goals.nil?
-			end
-			team.games_as_visitor.each do |game_visitor|
-				goals_for = goals_for + game_visitor.visitor_goals unless game_visitor.visitor_goals.nil?
-			end
-			team.goals_for = goals_for
-			team.save
+		Team.all.each do |team|
+			local_goals = team.games_as_local.sum(:local_goals)
+			visitor_goals = team.games_as_visitor.sum(:visitor_goals)
+			team.update goals_for: local_goals + visitor_goals
 		end
 	end
 
-	def self.generate_fixture_dummy
-		teams = Team.all
-		num_teams = teams.count
-		fixtures = teams.each_slice(2)
-		fixture_n = 1
-		for i in 1..num_teams*2-2
-			fixtures.each do |fixture|
-				if fixture.count == 2
-					game = Game.new
-					game.local_team = fixture[0]
-					game.visitor_team = fixture[1]
-					game.fixture = fixture_n
-					game.save
-				else
-					not_playing = fixture[0].name
-				end
-				
-			end
-			fixture_n += 1
+	def self.calculate_goals_against
+		Team.all.each do |team|
+			local_goals = team.games_as_local.sum(:visitor_goals)
+			visitor_goals = team.games_as_visitor.sum(:local_goals)
+			team.update goals_against: local_goals + visitor_goals
 		end
 	end
+
+	def self.calculate_games_played
+		Team.all.each do |team|
+			local_goals = team.games_as_local.where.not(local_goals: nil).count
+			visitor_goals = team.games_as_visitor.where.not(visitor_goals: nil).count
+			team.update! games_played: local_goals + visitor_goals
+		end
+	end
+
+	def self.calculate_games_won
+		Team.all.each do |team|
+			local_wins = team.games_as_local.where("local_goals > visitor_goals").count
+			visitor_wins = team.games_as_visitor.where("local_goals < visitor_goals").count
+			team.update! games_won: local_wins + visitor_wins
+		end
+	end
+
+	def self.calculate_games_lost
+		Team.all.each do |team|
+			local_losts = team.games_as_local.where("local_goals < visitor_goals").count
+			visitor_losts = team.games_as_visitor.where("local_goals > visitor_goals").count
+			team.update! games_lost: local_losts + visitor_losts
+		end
+	end
+
+	def self.calculate_games_draw
+		Team.all.each do |team|
+			local_draws = team.games_as_local.where("local_goals = visitor_goals").count
+			visitor_draws = team.games_as_visitor.where("local_goals = visitor_goals").count
+			team.update! games_draw: local_draws + visitor_draws
+		end
+	end
+
+	def self.generate_fixture_self_algorithm
+
+		Game.destroy_all
+		teams = Team.all
+
+		games = []
+
+		teams.each do |team|
+			rest_of_teams = teams - [team]
+			rest_of_teams.each do |team2|
+				possible_game = [team.id, team2.id]
+				next if games.include?(possible_game) || games.include?(possible_game.reverse)
+				game = Game.create(local_team: team, visitor_team: team2) 
+				games << [team.id, team2.id]
+			end
+		end
+
+		recursive_fixtures(games)
+		games
+	end
+
+
+	def self.recursive_fixtures(games, fixture = 1, fixtures = [])
+		game = games.find { |g| g.all? { |g2| !g2.in?(fixtures.flatten) } }
+
+		if game
+			Game.find_by(local_team_id: game.first, visitor_team_id: game.last).update!(fixture: fixture)
+			games.delete(game)
+			fixtures << game
+			recursive_fixtures(games, fixture, fixtures)
+		else
+			fixture += 1
+			#binding.pry
+			recursive_fixtures(games, fixture, []) unless games.size.zero?
+		end
+	end
+
 
 	def self.generate_fixture
 		Game.destroy_all

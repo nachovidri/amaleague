@@ -4,25 +4,47 @@
 	<title>League</title>
 </head>
 <body>
-	<h1>Pozuelo League</h1>
-	
-	<button>
-		<%= link_to 'View teams', teams_path %>	
-	</button>
-	<br>
-	<button>
-		<%= link_to 'View fixtures', games_path %>	
-	</button>
-	<br>
-	<button>
-		<%= link_to 'View table', view_table_path %>	
-	</button>
-	<br>
-	<br>
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-12 text-center">
+				<h1>Welcome to Ventorro del Cano League</h1>		
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-4 text-center">
+				<div class="thumbnail">
+					<i class="fa fa-users" aria-hidden="true"></i>
+					<button class="btn btn-default">
+						<%= link_to 'View teams', teams_path %>	
+					</button>
+				</div>
+			</div>
+			<div class="col-md-4 text-center">
+				<div class="thumbnail">
+					<i class="fa fa-table" aria-hidden="true"></i>
+					<button class="btn btn-default">
+						<%= link_to 'View fixtures', games_path %>	
+					</button>
+				</div>
+			</div>
+			<div class="col-md-4 text-center">
+				<div class="thumbnail">
+					<i class="fa fa-line-chart" aria-hidden="true"></i>
+					<button class="btn btn-default">
+						<%= link_to 'View table', table_games_path %>
+					</button>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12 text-center">
+				<button class="btn btn-default">
+					<%= link_to 'Generate fixture', fixture_games_path %>
 
-	<button>
-		<%= link_to 'Generate fixture', fixture_path %>	
-	</button>
+				</button>
+			</div>
+		</div>
+	</div>
 	
 
 	

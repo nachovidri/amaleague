@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170304141450) do
+ActiveRecord::Schema.define(version: 20170325113519) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -35,12 +35,12 @@ ActiveRecord::Schema.define(version: 20170304141450) do
     t.datetime "updated_at",       null: false
     t.integer  "points"
     t.integer  "goals_for"
-    t.integer  "goals_aganist"
+    t.integer  "goals_against"
     t.integer  "goals_difference"
     t.integer  "games_played"
     t.integer  "games_won"
     t.integer  "games_draw"
-    t.integer  "goals_lost"
+    t.integer  "games_lost"
   end
 
 end
