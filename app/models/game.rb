@@ -4,7 +4,7 @@ class Game < ApplicationRecord
 
   POINTS = {win: {local_points: 3, visitor_points: 0}, loose: {local_points: 0, visitor_points: 3}, draw: {local_points: 1, visitor_points: 1}}
 
-  validates :local_goals, :visitor_goals, numericality: { greater_than_or_equal_to: 0 }
+  validates :local_goals, :visitor_goals, numericality: { greater_than_or_equal_to: 0 }, unless: :new_record?
 
   def assign_points
     update POINTS[:win] if local_goals > visitor_goals
@@ -13,6 +13,7 @@ class Game < ApplicationRecord
   end
 
   def self.schedule
+    destroy_all
     teams = Team.all.to_a
     (0...teams.size-1).map do |r|
       t = teams.dup
@@ -23,8 +24,7 @@ class Game < ApplicationRecord
       tms_home = t[teams.size/2...teams.size].reverse
 
       (0...(teams.size/2)).map do |i|
-        obj = new local_team:tms_home[i], visitor_team: tms_away[i], fixture: r + 1
-        obj.save(valdiate: false)
+        create! local_team:tms_home[i], visitor_team: tms_away[i], fixture: r + 1
         [tms_away[i],tms_home[i]]
       end
     end
