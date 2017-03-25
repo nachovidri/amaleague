@@ -13,7 +13,6 @@ class Game < ApplicationRecord
   end
 
   def self.schedule
-    destroy_all
     teams = Team.all.to_a
     (0...teams.size-1).map do |r|
       t = teams.dup

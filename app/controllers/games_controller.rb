@@ -35,7 +35,10 @@ class GamesController < ApplicationController
   end
 
   def fixture
+    Game.destroy_all
     Game.schedule
+    Team.all.map(&:calculate_points)
+
     redirect_to games_path, notice: "Your League is ready to start!"
   end
 
