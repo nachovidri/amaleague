@@ -17,10 +17,11 @@ class GamesController < ApplicationController
   def update
     respond_to do |format|
       if @game.update(game_params)
+        @game.assign_points
         @game.visitor_team.calculate_points
         @game.local_team.calculate_points
 
-        format.html { redirect_to @game, notice: 'Game was successfully updated.' }
+        format.html { redirect_to games_path, notice: 'Game was successfully updated.' }
         format.json { render :show, status: :ok, location: @game }
       else
         format.html { render :edit }

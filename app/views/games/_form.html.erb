@@ -12,12 +12,12 @@
   <% end %>
 
   <div class="field">
-    <%= f.label :local_goals %>
+    <%= f.label :local_goals, "Goals for #{game.local_team.name} (local)" %>
     <%= f.text_field :local_goals %>
   </div>
 
   <div class="field">
-    <%= f.label :visitor_goals %>
+    <%= f.label :visitor_goals, "Goals for #{game.visitor_team.name} (visitor)" %>
     <%= f.text_field :visitor_goals %>
   </div>
 
