@@ -1,16 +1,6 @@
-<h1>Edit</h1>
+<h1>Editing Game</h1>
 
-<%= form_for [@game] do |f| %>
+<%= render 'form', game: @game %>
 
-	<%= f.label :local_goals, @game.local_team.name %>
-	<%= f.text_field :local_goals %>
-
-	<%= f.label :visitor_goals, @game.visitor_team.name %>
-	<%= f.text_field :visitor_goals %>
-
-	<%= f.label :date %>
-	<%= f.datetime_field :game_date_time %>
-
-	<%= f.button %>
-
-<% end %>
+<%= link_to 'Show', @game %> |
+<%= link_to 'Back', games_path %>

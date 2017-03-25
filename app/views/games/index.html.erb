@@ -1,58 +1,44 @@
-<html>
-<head>
-	<meta charset="UTF-8">
-	<title>Games</title>
-	<link rel='stylesheet' type="text/css" href='reset.css'>
-</head>
+<h1>Games</h1>
+<button class="btn btn-default">
+  <%= link_to 'Back', root_path, method: :get %>
+</button>
+<button class="btn btn-default">
+  <%= link_to 'View table', table_games_path %>
+</button>
 
-<body>
-	<h1>Games</h1>
-	<button class="btn btn-default">
-		<%= link_to 'Back', root_path, method: :get %>	
-	</button>
-	<button class="btn btn-default">
-		<%= link_to 'View table', table_games_path %>
-	</button>
-    
-	<% @game_fixture = "" %>
-	<table class="table table-striped ">
-		<% @fixtures.each do |fixture, games| %>
-    
-			<thead>
-				<td colspan="4"><h2>Fixture <%= fixture %></h2></td>
-			</thead>
+<% @game_fixture = "" %>
+<table class="table table-striped ">
+  <% @fixtures.each do |fixture, games| %>
 
-			<thead>
-				<th>Teams</th>
-				<th>Result</th>
-				<th>Date</th>
-				<th>Options</th>
-			</thead>
+      <thead>
+      <td colspan="4"><h2>Fixture <%= fixture %></h2></td>
+      </thead>
+
+      <thead>
+      <th>Teams</th>
+      <th>Result</th>
+      <th>Date</th>
+      <th>Options</th>
+      </thead>
 
 
-			<tbody>
-				<% games.each do |game| %>
-					<tr>
-						<td><%= game.local_team.name %> vs <%= game.visitor_team.name %></td>
-						<td><%= game.local_goals %> - <%= game.visitor_goals %></td>
-						<td><%= game.game_date_time %></td>
-						<td>
-							<%= link_to('Edit', edit_game_path(game), method: :get) %>
-							<%= link_to('Delete', game_path(game), method: :delete, data: { confirm: 'Are you sure?' }) %>
-						</td>
+      <tbody>
+      <% games.each do |game| %>
+          <tr>
+            <td><%= game.local_team.name %> vs <%= game.visitor_team.name %></td>
+            <td><%= game.local_goals %> - <%= game.visitor_goals %></td>
+            <td><%= game.game_date_time %></td>
+            <td>
+              <%= link_to('Edit', edit_game_path(game), method: :get) %>
+            </td>
 
-					</tr>
-				<% end %>
-			</tbody>
-		<% end %>
-	</table>
+          </tr>
+      <% end %>
+      </tbody>
+  <% end %>
+</table>
 
 
-	<button>
-		<%= link_to 'Back', root_path, method: :get %>	
-	</button>
-
-	
-</body>
-</html>
-
+<button>
+  <%= link_to 'Back', root_path, method: :get %>
+</button>

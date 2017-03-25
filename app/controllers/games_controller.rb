@@ -1,67 +1,51 @@
 class GamesController < ApplicationController
-	before_action :set_game, except: [:create, :new, :index]
+  before_action :set_game, only: [:show, :edit, :update, :destroy]
 
+  # GET /games
+  # GET /games.json
+  def index
+    @fixtures = Game.order(fixture: :asc).group_by(&:fixture)
+  end
 
-	def index
-		@fixtures = Game.order(fixture: :asc).group_by(&:fixture)
-	end
+  # GET /games/1
+  # GET /games/1.json
+  def show
+  end
 
-	def new
-		@game = Game.new
-	end
+  # PATCH/PUT /games/1
+  # PATCH/PUT /games/1.json
+  def update
+    respond_to do |format|
+      if @game.update(game_params)
+        @game.visitor_team.calculate_points
+        @game.local_team.calculate_points
 
-	def create
-		@game = Game.new(game_params)
-		@game.save
-		redirect_to games_path
-	end
+        format.html { redirect_to @game, notice: 'Game was successfully updated.' }
+        format.json { render :show, status: :ok, location: @game }
+      else
+        format.html { render :edit }
+        format.json { render json: @game.errors, status: :unprocessable_entity }
+      end
+    end
+  end
 
-	def update
-		if @game.update(game_params)
-			Game.assign_points
-			Game.calculate_points
-			Game.calculate_goals_for
-			Game.calculate_goals_against
-			Game.calculate_games_played
-			Game.calculate_games_won
-			Game.calculate_games_lost
-			Game.calculate_games_draw
-			redirect_to @game
-		else
-			render 'edit'
-		end
-	end
+  def table
+    @teams = Team.order(points: :desc, goals_for: :desc, goals_against: :asc)
+  end
 
-	def destroy
-		@game.destroy
-		redirect_to games_path
-	end
+  def fixture
+    Game.schedule
+    redirect_to games_path, notice: "Your League is ready to start!"
+  end
 
-	def table
-		@teams = Team.order(points: :desc)
-		Game.assign_points
-		Game.calculate_points
-		Game.calculate_goals_for
-		Game.calculate_goals_against
-		Game.calculate_games_played
-		Game.calculate_games_won
-		Game.calculate_games_lost
-		Game.calculate_games_draw
-	end
+  private
+    # Use callbacks to share common setup or constraints between actions.
+    def set_game
+      @game = Game.find(params[:id])
+    end
 
-	def fixture
-		Game.generate_fixture
-		redirect_to games_path
-	end
-
-	private
-
-	def set_game
-		@game = Game.find_by(id: params[:id])
-	end
-
-	def game_params
-		params.require(:game).permit(:local_team_id, :visitor_team_id, :local_goals, :visitor_goals, :game_date_time)
-	end
-
+    # Never trust parameters from the scary internet, only allow the white list through.
+    def game_params
+      params.require(:game).permit(:local_goals, :visitor_goals)
+    end
 end
